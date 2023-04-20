@@ -2,7 +2,6 @@
 using System.Linq;
 using HarmonyLib;
 using UnityEngine;
-
 namespace RagDoller
 {
     public class Patches
@@ -128,8 +127,58 @@ namespace RagDoller
                 ConnectedMassScale = 1
             };
             Utilities.Jointbuilder(rightJoint, rightleg.gameObject);
-            /*var spine2;
-            var head;
+            
+            
+            var spine2= player.gameObject.transform.Find("Visual/Armature/Hips/Spine/Spine1/Spine2");
+            ragdollColliders.Add(Utilities.BoxRagDollHelper(new Vector3(0, 0.0004566551f, -5.985866e-05f), new Vector3(0.004570569f, 0.0009132955f,0.002743611f), spine2.gameObject)!);
+            var spine2RB = Utilities.RbAdder(spine2.gameObject);
+            spine2RB!.mass = 1.875f;
+            spine2RB.angularDrag = 0.05f;
+            ragdollRBs.Add(spine2RB);
+            var spine2Joint = new Utilities.JointInputStruct
+            {
+                ConnectedBody = hipRb,
+                Axis = new Vector3(1,0,0),
+                ConnectedAnchor = new Vector3(0, 0.005708119f, -0.0003850954f),
+                SwingAxis = new Vector3(0,0,1),
+                LowTwistLimit = 20,
+                Swing1Limit = 10,
+                EnableProjection = true,
+                ProjectionDistance = 0.1f,
+                ProjectionAngle = 180,
+                BreakForce = float.MaxValue,
+                BreakTorque = float.MaxValue,
+                MassScale = 1,
+                ConnectedMassScale = 1
+            };
+            Utilities.Jointbuilder(spine2Joint, spine2.gameObject);
+            
+            var head = player.gameObject.transform.Find("Visual/Armature/Hips/Spine/Spine1/Spine2/Neck/Head");
+            ragdollColliders.Add(Utilities.SphereRagDollHelper(new Vector3(-0.0002801421f, 0.001438531f, 2.874114e-05f), 0.001428619f, head.gameObject)!);
+            var headRB = Utilities.RbAdder(head.gameObject);
+            headRB!.mass = 1.875f;
+            headRB.angularDrag = 0.05f;
+            ragdollRBs.Add(headRB);
+            var headJoint = new Utilities.JointInputStruct
+            {
+                ConnectedBody = spine2RB,
+                Axis = new Vector3(0,0,1),
+                ConnectedAnchor = new Vector3(-4.301378e-05f,0.00224686f,0.0005117025f),
+                SwingAxis = new Vector3(-1,0,0),
+                LowTwistLimit = -40,
+                HighTwistLimit = 25,
+                Swing1Limit = 25,
+                EnableProjection = true,
+                ProjectionDistance = 0.1f,
+                ProjectionAngle = 180,
+                BreakForce = float.MaxValue,
+                BreakTorque = float.MaxValue,
+                MassScale = 1,
+                ConnectedMassScale = 1
+            };
+            Utilities.Jointbuilder(headJoint, head.gameObject);
+
+            /*var head;
             var leftarm;
             var leftforearm;
             var rightarm;
