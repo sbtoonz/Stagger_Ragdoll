@@ -32,8 +32,9 @@ namespace RagDoller
        
         #endregion
 
-        private AssetBundle _asset;
+        internal AssetBundle? _assetBundle;
         internal static GameObject? RagDollObj;
+     
         public void Awake()
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
@@ -41,8 +42,9 @@ namespace RagDoller
             harmony.PatchAll(assembly);
             ServerConfigLocked = config("1 - General", "Lock Configuration", true, "If on, the configuration is locked and can be changed by server admins only.");
             configSync.AddLockingConfigEntry(ServerConfigLocked);
-            _asset = Utilities.LoadAssetBundle("ragdoll")!;
-            RagDollObj = _asset.LoadAsset<GameObject>("Armature");
+
+            _assetBundle = Utilities.LoadAssetBundle("ragdoll");
+            RagDollObj = _assetBundle!.LoadAsset<GameObject>("RagDoll");
         }
     }
 }
