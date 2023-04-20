@@ -60,16 +60,16 @@ namespace RagDoller
             }
         }
         
-        internal static RuntimeAnimatorController MakeAoc(RuntimeAnimatorController ORIGINAL, Dictionary<string, string> replacements , Dictionary<string, AnimationClip> ExternalAnimations)
+        internal static RuntimeAnimatorController MakeAoc(RuntimeAnimatorController original, Dictionary<string, string> replacements , Dictionary<string, AnimationClip> externalAnimations)
         {
-	        AnimatorOverrideController aoc = new AnimatorOverrideController(ORIGINAL);
+	        AnimatorOverrideController aoc = new AnimatorOverrideController(original);
 	        var anims = new List<KeyValuePair<AnimationClip, AnimationClip>>();
 	        foreach (var animation in aoc.animationClips)
 	        {
 		        string name = animation.name;
 		        if (replacements.TryGetValue(name, out var replacement))
 		        {
-			        AnimationClip newClip = MonoBehaviour.Instantiate<AnimationClip>(ExternalAnimations[replacement]);
+			        AnimationClip newClip = MonoBehaviour.Instantiate<AnimationClip>(externalAnimations[replacement]);
 			        anims.Add(new KeyValuePair<AnimationClip, AnimationClip>(animation, newClip));
 		        }
 		        else
@@ -81,18 +81,15 @@ namespace RagDoller
 	        return aoc;
         }
 
-        internal static BoxCollider? BoxRagDollHelper(Vector3 center, Vector3 size,GameObject obj, bool shouldAddRB = false)
+        internal static BoxCollider? BoxRagDollHelper(Vector3 center, Vector3 size,GameObject obj)
         {
 	        if(!obj) return null;
 	        var box = obj.AddComponent<BoxCollider>();
 	        box.center = center;
 	        box.size = size;
-	        if (!shouldAddRB) return box;
-	        var rb = obj.AddComponent<Rigidbody>();
-	        rb.constraints = RigidbodyConstraints.FreezeRotation;
 	        return box;
         }
-        internal static CapsuleCollider? CylRagDollHelper(Vector3 center, float rad, float height, Direction direction,GameObject obj, bool shouldAddRB = false)
+        internal static CapsuleCollider? CylRagDollHelper(Vector3 center, float rad, float height, Direction direction,GameObject obj)
         {
 	        if (!obj) return null;
 	        var cap = obj.AddComponent<CapsuleCollider>();
@@ -111,25 +108,19 @@ namespace RagDoller
 			        cap.direction = 2;
 			        break;
 	        }
-	        if (!shouldAddRB) return cap;
-	        var rb = obj.AddComponent<Rigidbody>();
-	        rb.constraints = RigidbodyConstraints.FreezeRotation;
 	        return cap;
         }
 
-        internal static SphereCollider? SphereRagDollHelper(Vector3 center, float rad,GameObject obj, bool shouldAddRB = false)
+        internal static SphereCollider? SphereRagDollHelper(Vector3 center, float rad,GameObject obj)
         {
 	        if (!obj) return null;
 	        var sphere = obj.AddComponent<SphereCollider>();
 	        sphere.center = center;
 	        sphere.radius = rad;
-	        if (!shouldAddRB) return sphere;
-	        var rb = obj.AddComponent<Rigidbody>();
-	        rb.constraints = RigidbodyConstraints.FreezeRotation;
 	        return sphere;
         }
 
-        internal static Rigidbody? RBAdder(GameObject obj)
+        internal static Rigidbody? RbAdder(GameObject obj)
         {
 	        if (!obj) return null;
 	        var r = obj.AddComponent<Rigidbody>();
@@ -138,16 +129,16 @@ namespace RagDoller
 	        return r;
         }
 
-        internal static void jointbuilder(JointInputStruct input, GameObject obj)
+        internal static void Jointbuilder(JointInputStruct input, GameObject obj)
         {
 	        if (!obj) return;
 	        var j = obj.AddComponent<CharacterJoint>();
-	        j.connectedBody = input.connectedBody;
-	        j.anchor = input.anchor;
-	        j.axis = input.axis;
+	        j.connectedBody = input.ConnectedBody;
+	        j.anchor = input.Anchor;
+	        j.axis = input.Axis;
 	        j.autoConfigureConnectedAnchor = true;
-	        j.connectedAnchor = input.connectedAnchor;
-	        j.swingAxis = input.swingAxis;
+	        j.connectedAnchor = input.ConnectedAnchor;
+	        j.swingAxis = input.SwingAxis;
 	        
 	        var twistLimitSpring = j.twistLimitSpring;
 	        twistLimitSpring.spring = input.TwistLimitSpring;
@@ -184,23 +175,21 @@ namespace RagDoller
 	        j.swing2Limit = jSwing2Limit;
 
 	        j.enableProjection = input.EnableProjection;
-	        j.projectionDistance = input.projectionDistance;
+	        j.projectionDistance = input.ProjectionDistance;
 	        j.projectionAngle = input.ProjectionAngle;
 	        j.enableCollision = input.EnableCollision;
 	        j.enablePreprocessing = input.EnablePreProcessing;
 	        j.massScale = input.MassScale;
 	        j.connectedMassScale = input.ConnectedMassScale;
-
-
         }
 
         internal struct JointInputStruct
         {
-	        internal Rigidbody connectedBody = null;
-	        internal Vector3 anchor= Vector3.zero;
-	        internal Vector3 axis = Vector3.zero;
-	        internal Vector3 connectedAnchor = Vector3.zero;
-	        internal Vector3 swingAxis = Vector3.zero;
+	        internal Rigidbody? ConnectedBody = null;
+	        internal Vector3 Anchor= Vector3.zero;
+	        internal Vector3 Axis = Vector3.zero;
+	        internal Vector3 ConnectedAnchor = Vector3.zero;
+	        internal Vector3 SwingAxis = Vector3.zero;
 	        internal float TwistLimitSpring =0;
 	        internal float TwistLimitDamper =0;
 	        internal float LowTwistLimit =0;
@@ -218,7 +207,7 @@ namespace RagDoller
 	        internal float Swing2Bounciness =0;
 	        internal float Swing2ContactDistance =0;
 	        internal bool EnableProjection =false;
-	        internal float projectionDistance =0;
+	        internal float ProjectionDistance =0;
 	        internal int ProjectionAngle =0;
 	        internal float BreakForce =0;
 	        internal float BreakTorque =0;
