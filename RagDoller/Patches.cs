@@ -41,7 +41,7 @@ namespace RagDoller
                 string lower = __instance.m_input.text.ToLower();
                 if (lower.Equals("/ragdoll"))
                 {
-                    Player.m_localPlayer.gameObject.GetComponent<Ragdoller>().SetRagDoll();
+                    Player.m_localPlayer.gameObject.GetComponent<Ragdoller>().SetRagDoll(Player.m_localPlayer.transform.position);
                     return false;
                 }
                 return true;
