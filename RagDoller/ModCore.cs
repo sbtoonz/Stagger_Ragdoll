@@ -32,7 +32,9 @@ namespace RagDoller
        
         #endregion
 
-     
+        internal static ConfigEntry<int> _lengthToWait;
+
+
         public void Awake()
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
@@ -40,6 +42,8 @@ namespace RagDoller
             harmony.PatchAll(assembly);
             ServerConfigLocked = config("1 - General", "Lock Configuration", true, "If on, the configuration is locked and can be changed by server admins only.");
             configSync.AddLockingConfigEntry(ServerConfigLocked);
+            _lengthToWait = config("1 - General", "How long to countdown", 3,
+                "How many seconds should the ragdoll countdown timer roll");
         }
     }
 }

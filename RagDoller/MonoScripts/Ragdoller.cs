@@ -14,7 +14,7 @@ public class Ragdoller : MonoBehaviour
     public static Animator? m_animator;
 
     private static Transform hips;
-    private static bool isRagDollActive = false;
+    public bool isRagDollActive = false;
     private void Start()
     {
         
@@ -34,16 +34,12 @@ public class Ragdoller : MonoBehaviour
     {
         if (!isRagDollActive)
         {
-            Vector3 pos = collisionLocation - transform.position;
-            var impact = pos.normalized;
-            var force = pos.magnitude * 10f;
-            gameObject.GetComponent<Rigidbody>().AddForce(impact*force, ForceMode.Impulse);
-            
             ToggleColliders(true);
             ToggleRotation(false);
             isRagDollActive = true;
+            var targ = transform.position - collisionLocation;
             m_animator.enabled = false;
-            hips.gameObject.GetComponent<Rigidbody>().AddRelativeForce(.11f,0,-0.1f);
+            gameObject.GetComponent<Rigidbody>().AddForce(targ.normalized * targ.magnitude);
         }
         else
         {
@@ -52,6 +48,7 @@ public class Ragdoller : MonoBehaviour
             ToggleRotation(true);
             isRagDollActive = false;
             m_animator.enabled = true;
+            m_animator.SetBool("Wakeup", true);
 
         }
     }
@@ -82,16 +79,22 @@ public class Ragdoller : MonoBehaviour
         }
         
     }
-
+    int i = 0;
     private void LateUpdate()
     {
-        if (!isRagDollActive) return;
+        if (!isRagDollActive)
+        {
+            i = 0;
+            return;
+        }
+
+        ++i;
         Vector3 target = Vector3.Lerp(transform.position, hips.position, Time.deltaTime);
         float f;
         Heightmap.GetHeight(hips!.position, out f);
         target.y = f+0.5f;
         hips.position = target;
-
+        if (i >=  (60*RagDollerMod._lengthToWait.Value))SetRagDoll(Vector3.zero);
     }
 
     public IEnumerator starter()
